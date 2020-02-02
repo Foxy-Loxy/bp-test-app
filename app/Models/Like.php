@@ -23,10 +23,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Like whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Like whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
  */
 class Like extends Model
 {
-    public function liker()
+    protected $fillable = [
+        'user_id',
+        'post_id',
+    ];
+
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }

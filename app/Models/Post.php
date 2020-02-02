@@ -27,9 +27,28 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Post whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Like[] $likes
+ * @property-read int|null $likes_count
+ * @property-read \App\Models\User $user
  */
 class Post extends Model
 {
+    protected $fillable = [
+        'body',
+        'title',
+        'user_id',
+    ];
+
+    public function likers()
+    {
+        return $this->hasManyThrough(User::class, Like::class, 'post_id', 'id', 'id', 'user_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id', 'id');
@@ -37,11 +56,6 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->hasMany(Like::class, 'post_id', 'uid')->count();
-    }
-
-    public function likers()
-    {
-        return $this->hasManyThrough(User::class, Like::class);
+        return $this->hasMany(Like::class, 'post_id', 'id');
     }
 }
